@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Ink;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -13,6 +14,8 @@ namespace AutomatonEditor
         public Automaton automaton = new Automaton();
         public int stateCounter = 0;
         public State selectedState;
+        public bool isDragging = false;
+        private Point mouseOffset;
 
         public MainWindow()
         {
@@ -54,6 +57,9 @@ namespace AutomatonEditor
 
                 grid.Tag= state;
                 grid.MouseLeftButtonDown += State_MouseLeftButtonDown;
+                grid.MouseRightButtonDown += State_MouseRightButtonDown;
+                grid.MouseMove += State_MouseMove;
+                grid.MouseRightButtonUp += State_MouseRightButtonUp;
 
 
                 Ellipse ellipse = new()
@@ -78,6 +84,47 @@ namespace AutomatonEditor
                 MainCanvas.Children.Add(grid);
             }
         }
+
+        private void State_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            isDragging = false;
+            Mouse.Capture(null);
+            e.Handled = true;
+        }
+
+        private void State_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (!isDragging || selectedState==null)
+            {
+                return;
+            }
+            Grid grid = (Grid)(sender);
+
+            Point mousePosition = e.GetPosition(MainCanvas);
+            selectedState.X = mousePosition.X - mouseOffset.X;
+            selectedState.Y = mousePosition.Y - mouseOffset.Y;
+            DrawStates();
+
+        }
+
+        private void State_MouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Grid grid = (Grid)(sender);
+            if (grid != null)
+            {
+                selectedState = (State)(grid.Tag);
+                Point mousePosition = e.GetPosition(MainCanvas);
+                mouseOffset = new Point(
+                    mousePosition.X - selectedState.X,
+                    mousePosition.Y - selectedState.Y
+                );
+                isDragging= true;
+                grid.CaptureMouse();
+                e.Handled = true;
+            }
+        }
+
+
 
         private void AddState_Click(object sender, RoutedEventArgs e)
         {

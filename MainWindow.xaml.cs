@@ -415,7 +415,7 @@ namespace AutomatonEditor
                 TextBox labelBox = new()
                 {
                     Text = transition?.Label ?? "",
-                    Tag = state,
+                    Tag = transition,
                     Width = 120
                 };
 
@@ -464,14 +464,8 @@ namespace AutomatonEditor
 
         private void TransitionLabel_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (selectedState == null)
-            {
-                return;
-            }
-
             TextBox textBox = (TextBox)sender;
-            State endState = (State)textBox.Tag;
-            Transition? transition = automaton.Transitions.FirstOrDefault(t => t.Source == selectedState && t.Target == endState);
+            Transition? transition = (Transition?)textBox.Tag;
             if (transition != null)
             {
                 transition.Label = textBox.Text;
@@ -485,7 +479,10 @@ namespace AutomatonEditor
         {
             foreach (var item in TransitionsList.Items)
             {
-                if (item is StackPanel row && row.Children.OfType<TextBox>().FirstOrDefault() is TextBox textBox && textBox.Tag == endState)
+                if (item is StackPanel row &&
+                    row.Children.OfType<CheckBox>().FirstOrDefault() is CheckBox checkBox &&
+                    row.Children.OfType<TextBox>().FirstOrDefault() is TextBox textBox &&
+                    checkBox.Tag == endState)
                 {
                     return textBox.Text;
                 }

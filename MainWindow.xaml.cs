@@ -511,19 +511,19 @@ namespace AutomatonEditor
 
         private void Import_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog dialog = new()
-            {
-                Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
-                InitialDirectory = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "WPF2")
-            };
-
-            if (dialog.ShowDialog() != true)
-            {
-                return;
-            }
-
             try
             {
+                OpenFileDialog dialog = new()
+                {
+                    Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
+                    InitialDirectory = GetImportDirectory()
+                };
+
+                if (dialog.ShowDialog() != true)
+                {
+                    return;
+                }
+
                 Automaton imported = LoadAutomaton(dialog.FileName);
                 automaton = imported;
                 stateCounter = automaton.States.Count;
@@ -539,6 +539,19 @@ namespace AutomatonEditor
             {
                 MessageBox.Show(exception.Message, "Invalid automaton", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private string GetImportDirectory()
+        {
+            string exampleDirectory = System.IO.Path.GetFullPath(
+                System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "WPF2"));
+
+            if (Directory.Exists(exampleDirectory))
+            {
+                return exampleDirectory;
+            }
+
+            return AppDomain.CurrentDomain.BaseDirectory;
         }
 
         private void ExportJson_Click(object sender, RoutedEventArgs e)

@@ -286,8 +286,15 @@ namespace AutomatonEditor
             }
             selectedState.X = mousePosition.X - mouseOffset.X;
             selectedState.Y = mousePosition.Y - mouseOffset.Y;
-            Canvas.SetLeft(grid, selectedState.X);
-            Canvas.SetTop(grid, selectedState.Y);
+            if (wasDragged)
+            {
+                DrawStates();
+            }
+            else
+            {
+                Canvas.SetLeft(grid, selectedState.X);
+                Canvas.SetTop(grid, selectedState.Y);
+            }
         }
 
         private void State_MouseRightButtonDown(object sender, MouseButtonEventArgs e)

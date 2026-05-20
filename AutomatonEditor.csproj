@@ -3,17 +3,10 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net9.0-windows</TargetFramework>
+    <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <EnableWindowsTargeting>true</EnableWindowsTargeting>
-    <LangVersion>preview</LangVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="WPF2\**\*.cs" />
-    <Page Remove="WPF2\**\*.xaml" />
-    <ApplicationDefinition Remove="WPF2\**\*.xaml" />
-  </ItemGroup>
 
 </Project>
